@@ -109,6 +109,12 @@ sudo hostapd /etc/hostapd/hostapd.conf
 
 
 ```
-
-
+### Step 8: To stop 
+```
+sudo pkill hostapd
+sudo pkill dnsmasq
+sudo iptables -F
+sudo iptables -t nat -F
+sudo ip addr flush dev wlp1s0
+```
 
