@@ -1,4 +1,4 @@
-# wifi-hotspot-in-wlp1s0
+# 1 Method. wifi-hotspot-in-wlp1s0
 
 ## 1.  our Wi-Fi adapter must support AP mode (check with iw list).
 
@@ -107,6 +107,114 @@ sudo iptables -t nat -F
 sudo ip addr flush dev wlp1s0
 ```
 
+### 2. Method via ap 
+
+Create a Virtual Wi-Fi Interface
+```
+sudo apt update
+sudo apt install hostapd dnsmasq iptables iw net-tools
+sudo ip link set wlp1s0 down
+sudo iw dev wlp1s0 interface add ap0 type __ap
+sudo ip link set wlp1s0 up
+sudo ip link set ap0 up
+
+```
+Assign Static IP to the ap0
+```
+sudo ip addr add 192.168.50.1/24 dev ap0
+
+```
+Configure hostapd
+
+```
+sudo nano /etc/hostapd/hostapd.conf
+
+```
+this config file 
+```
+interface=ap0
+driver=nl80211
+ssid=Hotspot
+hw_mode=g
+channel=6
+wmm_enabled=0
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=0987654321
+wpa_key_mgmt=WPA-PSK
+rsn_pairwise=CCMP
+```
+
+Tell system where the config is:
+```
+sudo nano /etc/default/hostapd
+
+```
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+
+
+Configure dnsmasq
+```
+sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.orig  # for copy file
+sudo nano /etc/dnsmasq.conf
+
+
+```
+```
+interface=ap0
+dhcp-range=192.168.50.10,192.168.50.100,12h
+
+```
+
+Enable IP Forwarding
+
+```
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+sudo nano /etc/sysctl.conf
+
+```
+Uncomment or add:
+```
+net.ipv4.ip_forward=1
+
+```
+
+Setup NAT using iptables
+
+```
+sudo iptables -t nat -A POSTROUTING -o wlp1s0 -j MASQUERADE
+sudo iptables -A FORWARD -i ap0 -o wlp1s0 -j ACCEPT
+sudo iptables -A FORWARD -i wlp1s0 -o ap0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+
+```
+Make iptables persistent (optional):
+
+```
+sudo systemctl start dnsmasq
+sudo systemctl unmask hostapd
+sudo systemctl enable hostapd
+sudo systemctl start hostapd
+
+```
+
+To Stop and Cleanup
+
+```
+sudo systemctl stop hostapd dnsmasq
+sudo ip link set ap0 down
+sudo iw dev ap0 del
+
+```
+Troubleshooting Tips
+```
+iw list | grep AP
+sudo hostapd -d /etc/hostapd/hostapd.conf
+journalctl -xe
+
+```
 
 ## 1.  if wifi adapter is not working Force Unload and Reload iwlwifi Driver
 
