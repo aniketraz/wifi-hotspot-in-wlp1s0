@@ -73,23 +73,24 @@ sudo dnsmasq
 ### Step 6: Enable IP Forwarding and Setup NAT
 ```
 echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
-
+```
 for making paramanet
-
+```
 sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 sudo sysctl -p
-
+```
 
 # Check internet route interface (may be same if STA+AP)
+```
 ip route
-
+```
 # Assuming `wlp1s0` is connected:
+```
 sudo iptables -t nat -A POSTROUTING -o wlp1s0 -j MASQUERADE
 sudo iptables -A FORWARD -i wlp1s0 -o wlp1s0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -A FORWARD -i wlp1s0 -o wlp1s0 -j ACCEPT
 
 ```
-
 
 ### Step 7: Start the Hotspot
 ```
