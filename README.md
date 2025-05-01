@@ -32,18 +32,19 @@ sudo rfkill unblock wifi
 ```
 sudo nano /etc/hostapd/hostapd.conf
 ```
+```
 interface=wlp1s0
 driver=nl80211
-ssid=MyUbuntuHotspot
+ssid=Hotspot
 hw_mode=g
 channel=6
 auth_algs=1
 wmm_enabled=1
 wpa=2
-wpa_passphrase=yourpassword123
+wpa_passphrase=0987654321
 wpa_key_mgmt=WPA-PSK
 rsn_pairwise=CCMP
-
+```
 
 ### Step 4: Configure Static IP for Hotspot Interface
 ```
