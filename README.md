@@ -1,17 +1,5 @@
 # wifi-hotspot-in-wlp1s0
 
-## Contents
-- our Wi-Fi adapter must support AP mode
-- Remove unused packages (orphans)
-- Clean cache in /home
-- remove old config files
-- Find and Remove
-   - duplicates
-   - empty files
-   - empty directories
-   - broken symlinks
-- Find Large files
-
 ## 1.  our Wi-Fi adapter must support AP mode (check with iw list).
 
 ## Make sure hostapd, dnsmasq, and iptables are installed.
