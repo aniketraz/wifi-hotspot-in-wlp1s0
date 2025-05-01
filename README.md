@@ -106,3 +106,58 @@ sudo iptables -t nat -F
 sudo ip addr flush dev wlp1s0
 ```
 
+
+## 1.  if wifi adapter is not working Force Unload and Reload iwlwifi Driver
+
+## Check for Loaded Modules
+```bash
+lsmod | grep iwl
+
+```
+Stop Services Using Wi-Fi
+```
+sudo systemctl stop NetworkManager
+sudo systemctl stop wpa_supplicant
+
+```
+Try Removing Modules
+
+```
+sudo modprobe -r iwlmvm
+sudo modprobe -r iwlwifi
+
+
+```
+If iwlmvm is removed successfully, proceed with iwlwifi
+```
+sudo rmmod iwlwifi
+sudo rmmod iwlmvm
+
+```
+Reload the iwlwifi Module
+
+```
+sudo modprobe iwlwifi
+
+```
+Restart Network Services
+
+```
+sudo systemctl start wpa_supplicant
+sudo systemctl start NetworkManager
+
+```
+Bring Up Wi-Fi Interface
+```
+sudo rfkill unblock wifi
+sudo ip link set wlp1s0 up
+
+
+```
+Check Wi-Fi Networks
+```
+nmcli device wifi list
+
+
+```
+
