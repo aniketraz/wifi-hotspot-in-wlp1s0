@@ -131,7 +131,8 @@ sudo nano /etc/hostapd/hostapd.conf
 
 ```
 this config file 
-```
+
+
 interface=ap0
 driver=nl80211
 ssid=Hotspot
@@ -145,7 +146,6 @@ wpa=2
 wpa_passphrase=0987654321
 wpa_key_mgmt=WPA-PSK
 rsn_pairwise=CCMP
-```
 
 Tell system where the config is:
 ```
